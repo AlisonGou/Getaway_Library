@@ -22,6 +22,6 @@ public class GetawayLibraryActivity extends GetawayLibrarySingleFragmentActivity
        UUID bookid = (UUID) getIntent().getSerializableExtra(EXTRA_BOOKMARK_ID);
 
        return new Bookmark_Fragment().newInstance(bookid);
-        //return  new Bookmark_Fragment();
+
     }
 }

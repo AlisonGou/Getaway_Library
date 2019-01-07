@@ -27,6 +27,7 @@ public class Bookmark_Fragment extends Fragment {
     private CheckBox mCheckBox;
     private static final String ARG_BOOK_ID="book id";
     private static final String DIALOG_DATE="DialogDate";
+    private static final int REQUEST_DATE=0;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,6 +78,9 @@ public class Bookmark_Fragment extends Fragment {
             public void onClick(View view) {
                 FragmentManager fragmentManager = getFragmentManager();
                 DatePicker_Fragment datePicker_fragment = DatePicker_Fragment.newInstance(mBookmark.getBookmarkaddeddate());
+
+                //set bookmark_fragment as target fragment
+                datePicker_fragment.setTargetFragment(Bookmark_Fragment.this,REQUEST_DATE);
                 datePicker_fragment.show(fragmentManager,DIALOG_DATE);
             }
         });

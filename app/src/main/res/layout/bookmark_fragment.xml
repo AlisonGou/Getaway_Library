@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+              xmlns:mapbox="http://schemas.android.com/apk/res-auto"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
 
     <TextView
         style="?android:listSeparatorTextViewStyle"
@@ -19,6 +21,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/bookmark_details_label"/>
+    <EditText
+        android:id="@+id/memo_message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/input_memos"/>
 
     <Button
         android:id="@+id/datebutton"
@@ -31,4 +38,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/bookmark_checked"/>
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/framelayout">
+        <com.mapbox.mapboxsdk.maps.MapView
+            android:id="@+id/map_in_bookmark_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            mapbox:mapbox_styleUrl="@string/mapbox_style_mapbox_streets"/>
+    </FrameLayout>
+
 </LinearLayout>

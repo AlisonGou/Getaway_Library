@@ -63,7 +63,7 @@ public class MapActivity extends AppCompatActivity implements PermissionsListene
 
             //create mapbox fragment
             mapFragment = SupportMapFragment.newInstance(mapboxMapOptions);
-            transaction.add(R.id.mapbox_fragment_container, mapFragment, "com.mapbox.map");
+            transaction.add(R.id.map_container, mapFragment, "com.mapbox.map");
             transaction.commit();
         } else {
             mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentByTag("com.mapbox.map");

@@ -13,6 +13,10 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 
+import com.mapbox.mapboxsdk.maps.MapView;
+import com.mapbox.mapboxsdk.maps.MapboxMap;
+import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
+
 import java.util.UUID;
 
 /**
@@ -33,8 +37,11 @@ public class Bookmark_Fragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         UUID bookid = (UUID) getArguments().getSerializable(ARG_BOOK_ID);
-
         mBookmark=Bookmarklab.get(getActivity()).getbookmark(bookid);
+
+
+
+
     }
 
     public static Bookmark_Fragment newInstance(UUID bookid){
@@ -95,6 +102,17 @@ public class Bookmark_Fragment extends Fragment {
                 mBookmark.setIschecked(isChecked);
             }
         });
+
+        MapView mapView = (MapView) view.findViewById(R.id.map_in_bookmark_container);
+        mapView.onCreate(savedInstanceState);
+        mapView.getMapAsync(new OnMapReadyCallback() {
+            @Override
+            public void onMapReady(MapboxMap mapboxMap) {
+                System.out.println("map in book container initialized");
+            }
+        });
+
+
         return view;
     }
 }

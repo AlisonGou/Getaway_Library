@@ -22,7 +22,7 @@ public class Bookmarklab {
 
         for(int i=0;i<100;i++){
             Bookmark bookmark=new Bookmark();
-            bookmark.setBookmarkname("bookmarkname #"+i);
+            bookmark.setBookmarkname("placename #"+i);
             bookmark.setIschecked(i%2==0);
             mBookmarkList.add(bookmark);
         }

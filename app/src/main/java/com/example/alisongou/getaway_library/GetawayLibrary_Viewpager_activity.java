@@ -3,14 +3,14 @@ package com.example.alisongou.getaway_library;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.health.UidHealthStats;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+
+import com.mapbox.mapboxsdk.Mapbox;
 
 import java.util.List;
 import java.util.UUID;
@@ -35,6 +35,8 @@ public class GetawayLibrary_Viewpager_activity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.getawaylibrary_viewpager_activity);
         mViewpager=(ViewPager) findViewById(R.id.getawayactivity_viewpager);
+
+        Mapbox.getInstance(this, getString(R.string.accesstoken));
 
         mbookmarks=Bookmarklab.get(this).getBookmarkList();
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -61,6 +63,12 @@ public class GetawayLibrary_Viewpager_activity extends AppCompatActivity {
                 break;
             }
         }
+
+
+
+
+
+
 
 
     }

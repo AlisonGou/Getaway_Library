@@ -38,15 +38,17 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/bookmark_checked"/>
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/framelayout">
-        <com.mapbox.mapboxsdk.maps.MapView
-            android:id="@+id/map_in_bookmark_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            mapbox:mapbox_styleUrl="@string/mapbox_style_mapbox_streets"/>
-    </FrameLayout>
+
+    <com.mapbox.mapboxsdk.maps.MapView
+        android:id="@+id/mapview"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="5dp"
+        mapbox:mapbox_styleUrl="@string/mapbox_style_mapbox_streets"
+        />
+
 
 </LinearLayout>

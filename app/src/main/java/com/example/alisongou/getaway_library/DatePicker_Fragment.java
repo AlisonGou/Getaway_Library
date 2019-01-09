@@ -6,8 +6,6 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.view.DragAndDropPermissions;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.DatePicker;
@@ -26,7 +24,7 @@ public class DatePicker_Fragment extends android.support.v4.app.DialogFragment {
 
     private DatePicker datePicker;
 
-    private static final String EXTRA_DATE="date";
+    public static final String EXTRA_DATE="date";
 
 
     @Override

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/menu_item_new_bookmark"
+        android:icon="@drawable/ic_menu_add"
+        android:title="@string/new_bookmark"
+        app:showAsAction="ifRoom|withText"/>
+
+</menu>

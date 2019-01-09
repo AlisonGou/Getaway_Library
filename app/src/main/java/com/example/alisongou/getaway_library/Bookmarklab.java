@@ -20,12 +20,7 @@ public class Bookmarklab {
     private Bookmarklab (Context context){
         mBookmarkList = new ArrayList<>();
 
-        for(int i=0;i<100;i++){
-            Bookmark bookmark=new Bookmark();
-            bookmark.setBookmarkname("placename #"+i);
-            bookmark.setIschecked(i%2==0);
-            mBookmarkList.add(bookmark);
-        }
+
     }
 
 
@@ -40,7 +35,9 @@ public class Bookmarklab {
         }
         return null;
     }
-
+    private void addbookmark(Bookmark bookmark){
+        mBookmarkList.add(bookmark);
+    }
 
 
 }

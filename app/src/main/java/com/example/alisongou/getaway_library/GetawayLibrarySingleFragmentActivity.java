@@ -17,7 +17,7 @@ public abstract class GetawayLibrarySingleFragmentActivity extends AppCompatActi
         FragmentManager fragmentManager= getSupportFragmentManager();
         Fragment fragment = fragmentManager.findFragmentById(R.id.fragment_container);
 
-            if(fragment==null){
+        if(fragment==null){
             fragment=createFragment();
             fragmentManager.beginTransaction().add(R.id.fragment_container,fragment).commit();
         }
@@ -26,4 +26,5 @@ public abstract class GetawayLibrarySingleFragmentActivity extends AppCompatActi
 
 
     }
+
 }

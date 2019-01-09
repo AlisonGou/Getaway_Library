@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">GetawayLibrary</string>
+    <string name="app_name">getaway library</string>
     <string name="bookmark_checked">place checked</string>
     <string name="bookmark_title_label">bookmark name</string>
     <string name="bookmark_details_label">memos</string>
@@ -7,4 +7,9 @@
     <string name="date_picker_title">Date of adding</string>
     <string name="input_memos">input memos</string>
     <string name="accesstoken">pk.eyJ1IjoiYWxpc29uZ291IiwiYSI6ImNqcGFwdXc5czAyOWgzbG9mZmsyNTh2a2wifQ.FSS06iLZDD3cJ4exXRyZuA</string>
+    <string name="new_bookmark">new bookmark</string>
+    <string name="show_subtitle">show subtitle</string>
+    <string name="hide_subtitle">hide subtitle</string>
+    <string name="subtitle_format">%1$s bookmarks</string>
+
 </resources>

@@ -1,5 +1,7 @@
 package com.example.alisongou.getaway_library;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -17,6 +19,7 @@ import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 
+import java.util.Date;
 import java.util.UUID;
 
 /**
@@ -29,6 +32,7 @@ public class Bookmark_Fragment extends Fragment {
     private EditText mEditText;
     private Button mDateButton;
     private CheckBox mCheckBox;
+    private  MapView mapView;
     private static final String ARG_BOOK_ID="book id";
     private static final String DIALOG_DATE="DialogDate";
     private static final int REQUEST_DATE=0;
@@ -79,7 +83,7 @@ public class Bookmark_Fragment extends Fragment {
         });
 
         mDateButton = view.findViewById(R.id.datebutton);
-        mDateButton.setText(mBookmark.getBookmarkaddeddate().toString());
+        updateDate();
         mDateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -103,7 +107,7 @@ public class Bookmark_Fragment extends Fragment {
             }
         });
 
-        MapView mapView = (MapView) view.findViewById(R.id.map_in_bookmark_container);
+        mapView= (MapView) view.findViewById(R.id.mapview);
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(new OnMapReadyCallback() {
             @Override
@@ -114,5 +118,20 @@ public class Bookmark_Fragment extends Fragment {
 
 
         return view;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode!= Activity.RESULT_OK){return;}
+
+        if (requestCode==REQUEST_DATE){
+            Date date = (Date)data.getSerializableExtra(DatePicker_Fragment.EXTRA_DATE);
+            mBookmark.setBookmarkaddeddate(date);
+            updateDate();
+        }
+    }
+
+    private void updateDate() {
+        mDateButton.setText(mBookmark.getBookmarkaddeddate().toString());
     }
 }

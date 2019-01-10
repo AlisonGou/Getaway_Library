@@ -8,6 +8,9 @@ import android.support.v4.app.FragmentManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -39,6 +42,8 @@ public class Bookmark_Fragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        setHasOptionsMenu(true);
 
         UUID bookid = (UUID) getArguments().getSerializable(ARG_BOOK_ID);
         mBookmark=Bookmarklab.get(getActivity()).getbookmark(bookid);
@@ -134,4 +139,33 @@ public class Bookmark_Fragment extends Fragment {
     private void updateDate() {
         mDateButton.setText(mBookmark.getBookmarkaddeddate().toString());
     }
+
+    //set a delete menu for new bookmarkfragment
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.fragment_bookmark_menu,menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.deletebookmark:
+                deletebookmark();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+
+
+        }
+
+    }
+    //do not save latest bookmarkfragment
+    public void deletebookmark(){
+        int listsize =Bookmarklab.get(getActivity()).getBookmarkList().size();
+        Bookmarklab.get(getActivity()).getBookmarkList().remove(listsize-1);
+        getActivity().finish();
+    }
 }
+
+

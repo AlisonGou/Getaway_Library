@@ -1,9 +1,11 @@
 package com.example.alisongou.getaway_library;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -20,6 +22,7 @@ import java.util.List;
 public class Bookmark_list_fragment extends Fragment {
     private RecyclerView mRecyclerView;
     private BookmarkAdaptor bookmarkAdaptor;
+    private boolean mSubtitleVisible;
 
 
     @Override
@@ -49,6 +52,9 @@ public class Bookmark_list_fragment extends Fragment {
         }else {
             bookmarkAdaptor.notifyDataSetChanged();
         }
+
+        //实现 子标题与bookmark个数同步
+        updateSubtitle();
 
 
     }
@@ -128,6 +134,13 @@ public class Bookmark_list_fragment extends Fragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.fragment_bookmark_list,menu);
+
+        MenuItem submenuItem = menu.findItem(R.id.menu_item_show_subtitle);
+        if (mSubtitleVisible){
+            submenuItem.setTitle(R.string.hide_subtitle);
+        }else{
+            submenuItem.setTitle(R.string.show_count);
+        }
     }
 
     @Override
@@ -139,10 +152,30 @@ public class Bookmark_list_fragment extends Fragment {
                 Intent intent = GetawayLibrary_Viewpager_activity.newIntent(getActivity(),bookmark.getMbookmarkid());
                 startActivity(intent);
                 return true;
+            case R.id.menu_item_show_subtitle:
+                // ! Called Logical NOT Operator. Use to reverses the logical state of its operand. If a condition is true then Logical NOT operator will make false.
+                mSubtitleVisible =!mSubtitleVisible;
+                //invalidateOptionsMenu() 并不会重新建立新的对象，还是对应原来的menu对象，只是原来所填充的菜单项都无效
+                getActivity().invalidateOptionsMenu();
+                //响应Show Subtitle菜单项单击事件 计算bookmark个数
+                updateSubtitle();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+    //设置工具栏子标题
+    private void updateSubtitle(){
+        Bookmarklab bookmarkLab = Bookmarklab.get(getActivity());
+        int bookmarkCount = bookmarkLab.getBookmarkList().size();
+        @SuppressLint("StringFormatMatches")
+        String subtitle = getString(R.string.subtitle_format, bookmarkCount);
 
-
+        //实现菜单项标题与子标题的联动
+        if(!mSubtitleVisible){
+         subtitle=null;
+        }
+        AppCompatActivity activity = (AppCompatActivity) getActivity();
+        activity.getSupportActionBar().setSubtitle(subtitle);
     }
 }

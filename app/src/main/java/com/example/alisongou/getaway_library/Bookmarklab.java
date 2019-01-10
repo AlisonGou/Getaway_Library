@@ -39,5 +39,7 @@ public class Bookmarklab {
         mBookmarkList.add(bookmark);
     }
 
+    private void deletebookmark(Bookmark bookmark){mBookmarkList.remove(bookmark);}
+
 
 }

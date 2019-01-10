@@ -17,9 +17,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".GetawayLibrary_List_activity">
+        <activity android:name=".GetawayLibrary_List_activity"
+            android:parentActivityName=".MapActivity">
         </activity>
-        <activity android:name=".GetawayLibrary_Viewpager_activity">
+        <activity android:name=".GetawayLibrary_Viewpager_activity"
+            android:parentActivityName=".GetawayLibrary_List_activity">
         </activity>
     </application>
 

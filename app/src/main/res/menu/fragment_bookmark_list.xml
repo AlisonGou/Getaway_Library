@@ -5,6 +5,10 @@
         android:id="@+id/menu_item_new_bookmark"
         android:icon="@drawable/ic_menu_add"
         android:title="@string/new_bookmark"
-        app:showAsAction="ifRoom|withText"/>
+        app:showAsAction="collapseActionView"/>
+    <item
+        android:id="@+id/menu_item_show_subtitle"
+        android:title="@string/show_count"
+        app:showAsAction="collapseActionView"/>
 
 </menu>

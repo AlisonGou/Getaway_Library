@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -147,6 +148,7 @@ public class Bookmark_list_fragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case R.id.menu_item_new_bookmark:
+                System.out.println("");
                 Bookmark bookmark=new Bookmark();
                 Bookmarklab.get(getActivity()).getBookmarkList().add(bookmark);
                 Intent intent = GetawayLibrary_Viewpager_activity.newIntent(getActivity(),bookmark.getMbookmarkid());

@@ -11,6 +11,9 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 
 import com.mapbox.mapboxsdk.Mapbox;
+import com.mapbox.mapboxsdk.maps.MapView;
+import com.mapbox.mapboxsdk.maps.MapboxMap;
+import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 
 import java.util.List;
 import java.util.UUID;
@@ -22,6 +25,7 @@ import java.util.UUID;
 public class GetawayLibrary_Viewpager_activity extends AppCompatActivity {
     private ViewPager mViewpager;
     private List<Bookmark> mbookmarks;
+    private MapView mapView;
     private static  final String EXTRA_BOOKMARK_ID="com.example.alisongou.getaway_library.bookmark_id";
 
     public static Intent newIntent(Context packagecontext, UUID bookid){
@@ -37,6 +41,7 @@ public class GetawayLibrary_Viewpager_activity extends AppCompatActivity {
         mViewpager=(ViewPager) findViewById(R.id.getawayactivity_viewpager);
 
         Mapbox.getInstance(this, getString(R.string.accesstoken));
+
 
         mbookmarks=Bookmarklab.get(this).getBookmarkList();
         FragmentManager fragmentManager = getSupportFragmentManager();

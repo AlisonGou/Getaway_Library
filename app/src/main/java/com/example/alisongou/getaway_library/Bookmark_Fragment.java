@@ -112,15 +112,6 @@ public class Bookmark_Fragment extends Fragment {
             }
         });
 
-        mapView= (MapView) view.findViewById(R.id.mapview);
-        mapView.onCreate(savedInstanceState);
-        mapView.getMapAsync(new OnMapReadyCallback() {
-            @Override
-            public void onMapReady(MapboxMap mapboxMap) {
-                System.out.println("map in book container initialized");
-            }
-        });
-
 
         return view;
     }

@@ -157,6 +157,14 @@ public class Bookmark_Fragment extends Fragment {
         Bookmarklab.get(getActivity()).getBookmarkList().remove(listsize-1);
         getActivity().finish();
     }
+
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Bookmarklab.get(getActivity()).updatebookmark(mBookmark);
+
+    }
 }
 
 

@@ -14,9 +14,13 @@ public class Bookmark {
     private String bookmarkname;
     private boolean ischecked;
 
-    public Bookmark(){
-       mbookmarkid = UUID.randomUUID();
+    public Bookmark(UUID uuid){
+       mbookmarkid = uuid;
        bookmarkaddeddate = new Date();
+    }
+
+    public Bookmark(){
+        this(UUID.randomUUID());
     }
 
     public UUID getMbookmarkid() {

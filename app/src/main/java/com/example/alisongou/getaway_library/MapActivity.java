@@ -12,6 +12,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import com.mapbox.android.core.permissions.PermissionsListener;
@@ -34,6 +35,7 @@ import java.util.List;
 public class MapActivity extends AppCompatActivity implements  PermissionsListener {
     private MapboxMap mMapboxMap;
     private PermissionsManager mPermissionsManager;
+    private android.support.v7.widget.SearchView searchView;
 
 
     @Override
@@ -125,4 +127,23 @@ public class MapActivity extends AppCompatActivity implements  PermissionsListen
     public void onPermissionResult(boolean granted) {
 
     }
+
+    //define behaviour of the apps search view
+    private void setupsearchview(){
+        searchView = (android.support.v7.widget.SearchView)findViewById(R.id.searchview);
+        searchView.setOnQueryTextListener(new android.support.v7.widget.SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+    }
+
+    //define an array adaptor using the string array and a default spinner layout
+
 }

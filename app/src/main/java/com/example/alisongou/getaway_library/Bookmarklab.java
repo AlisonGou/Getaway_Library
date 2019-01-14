@@ -5,7 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.example.alisongou.database.BookmarkDB_schema;
+import com.example.alisongou.database.BookmarkCursorWrapper;
 import com.example.alisongou.database.BookmarkDB_schema.BookmarkTable;
 import com.example.alisongou.database.Bookmark_Openhelper;
 
@@ -42,13 +42,33 @@ public class Bookmarklab {
     }
 
     public List<Bookmark> getBookmarkList() {
-        return new ArrayList<>();
+        List<Bookmark> bookmarks = new ArrayList<>();
+        BookmarkCursorWrapper cursorWrapper = querybookmarks(null,null);
+        try{
+            cursorWrapper.moveToFirst();
+            while(!cursorWrapper.isAfterLast()){
+                bookmarks.add(cursorWrapper.getbookmark());
+                cursorWrapper.moveToNext();
+            }
+        }finally {
+            cursorWrapper.close();
+        }
+        return bookmarks;
     }
     public Bookmark getbookmark(UUID id){
+        BookmarkCursorWrapper cursorWrapper = querybookmarks(BookmarkTable.cols.UUID+ "=?",new String[]{id.toString()});
+        try{
+            if(cursorWrapper.getCount()==0){
+                return null;
+            }
+            cursorWrapper.moveToFirst();
+            return cursorWrapper.getbookmark();
+        }finally {
+            cursorWrapper.close();
+        }
 
-        return null;
     }
-    private void addbookmark(Bookmark bookmark){
+    public void addbookmark(Bookmark bookmark){
         ContentValues contentValues = getContentValues(bookmark);
         mDatabase.insert(BookmarkTable.NAME,null,contentValues);
 
@@ -60,12 +80,15 @@ public class Bookmarklab {
         mDatabase.update(BookmarkTable.NAME, contentValues, BookmarkTable.cols.UUID + " = ?", new String[]{uuidstring});
 
     }
-    private void deletebookmark(Bookmark bookmark){}
+    public void deletebookmark(Bookmark bookmark){
+        String uuidstring = bookmark.getMbookmarkid().toString();
+        mDatabase.delete(BookmarkTable.NAME,BookmarkTable.cols.UUID + "=?",new String[]{uuidstring});
+    }
 
 
-    private Cursor querybookmarks(String whereclause, String[] whereargs){
+    private BookmarkCursorWrapper querybookmarks(String whereclause, String[] whereargs){
         Cursor cursor = mDatabase.query(BookmarkTable.NAME,null,whereclause,whereargs,null,null,null );
-        return  cursor;
+        return  new BookmarkCursorWrapper(cursor);
     }
 
 

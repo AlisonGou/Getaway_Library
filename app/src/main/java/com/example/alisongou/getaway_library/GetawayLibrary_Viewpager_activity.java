@@ -12,8 +12,6 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.maps.MapView;
-import com.mapbox.mapboxsdk.maps.MapboxMap;
-import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 
 import java.util.List;
 import java.util.UUID;
@@ -68,13 +66,6 @@ public class GetawayLibrary_Viewpager_activity extends AppCompatActivity {
                 break;
             }
         }
-
-
-
-
-
-
-
 
     }
 }

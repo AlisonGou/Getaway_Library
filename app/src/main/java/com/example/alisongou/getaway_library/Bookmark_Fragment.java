@@ -18,10 +18,6 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 
-import com.mapbox.mapboxsdk.maps.MapView;
-import com.mapbox.mapboxsdk.maps.MapboxMap;
-import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
-
 import java.util.Date;
 import java.util.UUID;
 
@@ -35,7 +31,6 @@ public class Bookmark_Fragment extends Fragment {
     private EditText mEditText;
     private Button mDateButton;
     private CheckBox mCheckBox;
-    private  MapView mapView;
     private static final String ARG_BOOK_ID="book id";
     private static final String DIALOG_DATE="DialogDate";
     private static final int REQUEST_DATE=0;
@@ -142,7 +137,9 @@ public class Bookmark_Fragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case R.id.deletebookmark:
-                deletebookmark();
+                Bookmarklab.get(getActivity()).deletebookmark(mBookmark);
+                //to return to parent activity
+                getActivity().finish();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -151,12 +148,7 @@ public class Bookmark_Fragment extends Fragment {
         }
 
     }
-    //do not save latest bookmarkfragment
-    public void deletebookmark(){
-        int listsize =Bookmarklab.get(getActivity()).getBookmarkList().size();
-        Bookmarklab.get(getActivity()).getBookmarkList().remove(listsize-1);
-        getActivity().finish();
-    }
+
 
 
     @Override

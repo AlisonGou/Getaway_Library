@@ -16,7 +16,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.List;
 
@@ -51,7 +50,9 @@ public class Bookmark_list_fragment extends Fragment {
             bookmarkAdaptor = new BookmarkAdaptor(bookmarks);
             mRecyclerView.setAdapter(bookmarkAdaptor);
         }else {
+            bookmarkAdaptor.setBookmarks(bookmarks);
             bookmarkAdaptor.notifyDataSetChanged();
+
         }
 
         //实现 子标题与bookmark个数同步
@@ -121,6 +122,11 @@ public class Bookmark_list_fragment extends Fragment {
             return mbookmarks.size();
 
         }
+
+        //add method setBookmarks(List(Bookmark))
+        public void setBookmarks(List<Bookmark> bookmarks){
+            mbookmarks = bookmarks;
+        }
     }
 
 
@@ -150,7 +156,7 @@ public class Bookmark_list_fragment extends Fragment {
             case R.id.menu_item_new_bookmark:
                 System.out.println("");
                 Bookmark bookmark=new Bookmark();
-                Bookmarklab.get(getActivity()).getBookmarkList().add(bookmark);
+                Bookmarklab.get(getActivity()).addbookmark(bookmark);
                 Intent intent = GetawayLibrary_Viewpager_activity.newIntent(getActivity(),bookmark.getMbookmarkid());
                 startActivity(intent);
                 return true;

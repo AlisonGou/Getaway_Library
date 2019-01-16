@@ -11,7 +11,7 @@
     <include
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/searchview"
+        android:id="@+id/floating_searchview"
         layout="@layout/map_search_view"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"

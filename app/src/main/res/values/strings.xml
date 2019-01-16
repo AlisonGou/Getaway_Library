@@ -11,5 +11,7 @@
     <string name="show_count">show count</string>
     <string name="hide_subtitle">hide counts</string>
     <string name="subtitle_format">I have %1$s bookmarks</string>
+    <string name="user_location_permission_explanation">request location</string>
+    <string name="user_location_permission_not_granted">not able to get location</string>
 
 </resources>

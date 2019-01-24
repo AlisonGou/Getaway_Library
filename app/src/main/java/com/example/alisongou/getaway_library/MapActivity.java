@@ -3,14 +3,16 @@ package com.example.alisongou.getaway_library;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.MatrixCursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.BaseColumns;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -22,9 +24,10 @@ import com.mapbox.android.core.permissions.PermissionsManager;
 import com.mapbox.api.geocoding.v5.MapboxGeocoding;
 import com.mapbox.api.geocoding.v5.models.CarmenFeature;
 import com.mapbox.api.geocoding.v5.models.GeocodingResponse;
-import com.mapbox.geojson.Feature;
-import com.mapbox.geojson.Point;
 import com.mapbox.mapboxsdk.Mapbox;
+import com.mapbox.mapboxsdk.annotations.Icon;
+import com.mapbox.mapboxsdk.annotations.IconFactory;
+import com.mapbox.mapboxsdk.annotations.MarkerOptions;
 import com.mapbox.mapboxsdk.camera.CameraPosition;
 import com.mapbox.mapboxsdk.constants.Style;
 import com.mapbox.mapboxsdk.geometry.LatLng;
@@ -43,13 +46,18 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+
 public class MapActivity extends AppCompatActivity implements  PermissionsListener {
     private MapboxMap mMapboxMap;
     private PermissionsManager mPermissionsManager;
     private SearchView searchView;
     private static final String TAG = "MapActivity";
     private GeoJsonSource geoJson;
-    private List<Feature> mFeatures;
+    private List<CarmenFeature> mFeatures;
+    private String COLUMN_NAME_ADDRESS ="address";
+    private String[] mCollumnNames = {BaseColumns._ID,COLUMN_NAME_ADDRESS};
+
+
 
 
     @Override
@@ -62,7 +70,6 @@ public class MapActivity extends AppCompatActivity implements  PermissionsListen
         // Mapbox access token is configured here. This needs to be called either in your application
         // object or in the same activity which contains the mapview.
         Mapbox.getInstance(this, getString(R.string.accesstoken));
-
         //create fragment
         SupportMapFragment mapFragment;
         if (savedInstanceState == null) {
@@ -96,8 +103,7 @@ public class MapActivity extends AppCompatActivity implements  PermissionsListen
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                hideKeyboard();
-                System.out.println("the input word is"+query);
+                //System.out.println("searchview the input word is:"+query);
 
                 //execute task
                 FetchPOITask fetchPOITask = new FetchPOITask();
@@ -108,9 +114,71 @@ public class MapActivity extends AppCompatActivity implements  PermissionsListen
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                return false;
+                if(newText!=null&newText.length()>1){
+                    MapboxGeocoding mapboxGeocoding = MapboxGeocoding.builder()
+                            .accessToken("pk.eyJ1IjoiYWxpc29uZ291IiwiYSI6ImNqcGFwdXc5czAyOWgzbG9mZmsyNTh2a2wifQ.FSS06iLZDD3cJ4exXRyZuA")
+                            .query(newText)
+                            .build();
+                    mapboxGeocoding.enqueueCall(new Callback<GeocodingResponse>() {
+                        @Override
+                        public void onResponse(Call<GeocodingResponse> call, Response<GeocodingResponse> response) {
+
+                            try {
+                                List<CarmenFeature> results = response.body().features();
+                                //System.out.println("geocoding resut is "+results);
+
+                                MatrixCursor suggestioncursor = new MatrixCursor(mCollumnNames);
+                                int key=0;
+                                //add each address of carmenfeature to a new row
+                                for (CarmenFeature carmenFeature : results){
+                                    suggestioncursor.addRow(new Object[]{key++,carmenFeature.placeName()});
+
+                                }
+                                String[] cols=new String[]{COLUMN_NAME_ADDRESS};
+                                int[] to = new int[]{R.id.suggestion_address};
+                                //define simplecursoradaptor
+                                SimpleCursorAdapter suggestionCursorAdapter = new SimpleCursorAdapter(MapActivity.this,R.layout.suggestion,suggestioncursor,cols,to,0);
+                                searchView.setSuggestionsAdapter(suggestionCursorAdapter);
+                                //handle an address suggestion being chose
+                                searchView.setOnSuggestionListener(new SearchView.OnSuggestionListener() {
+                                    @Override
+                                    public boolean onSuggestionSelect(int position) {
+                                        return true;
+                                    }
+
+                                    @Override
+                                    public boolean onSuggestionClick(int position) {
+                                        //get the selected row
+                                        MatrixCursor selectedrow = (MatrixCursor)suggestionCursorAdapter.getItem(position);
+                                        //get rows index
+                                        int selectedcursorindex = selectedrow.getColumnIndex(COLUMN_NAME_ADDRESS);
+                                        //get string from the row at index
+                                        String address = selectedrow.getString(selectedcursorindex);
+                                        //System.out.println("suggestion address is"+address);
+                                        //searchView.setQuery(address,true);
+                                        return true;
+                                    }
+                                });
+                            } catch (Exception e) {
+                                //System.out.println("geocode suggestion error :"+e.getCause());
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<GeocodingResponse> call, Throwable throwable) {
+                            throwable.printStackTrace();
+                        }
+                    });
+                }else if (newText!=null&newText.length()<=1){
+                    Toast.makeText(MapActivity.this,"tell me your dream place",Toast.LENGTH_LONG).show();
+                }
+
+                return true;
             }
         });
+
+
+
 
 
 
@@ -156,9 +224,6 @@ public class MapActivity extends AppCompatActivity implements  PermissionsListen
         }
     }
 
-
-
-
 //setup menu to repsonse which will take user to other pages
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -181,54 +246,30 @@ public class MapActivity extends AppCompatActivity implements  PermissionsListen
     }
 
 
-
-
     //define AsyncTask to retrieve geocoding
-    private class FetchPOITask extends AsyncTask<String,Void,List<CarmenFeature>>{
-
-
+    public class FetchPOITask extends AsyncTask<String,Void,List<POI>>{
         @Override
-        protected List<CarmenFeature> doInBackground(String... string) {
-            try {
-                //use geocoding_request to get carmenfeatures
-                //return  new Geocoding_request(string[0]).fetchresult();
-                MapboxGeocoding mapboxGeocoding = MapboxGeocoding.builder()
-                        .accessToken(getString(R.string.accesstoken))
-                        .query(string[0])
-                        .build();
-                mapboxGeocoding.enqueueCall(new Callback<GeocodingResponse>() {
-                    @Override
-                    public void onResponse(Call<GeocodingResponse> call, Response<GeocodingResponse> response) {
+        protected List<POI> doInBackground(String...strings) {
 
-                        List<CarmenFeature> results = response.body().features();
-
-                        if (results.size() > 0) {
-
-                            // Log the first results Point.
-                            Point firstResultPoint = results.get(0).center();
-                            Log.d(TAG, "onResponse: " + firstResultPoint.toString());
-
-                        } else {
-
-                            // No result for your request were found.
-                            Log.d(TAG, "onResponse: No result found");
-
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<GeocodingResponse> call, Throwable throwable) {
-                        throwable.printStackTrace();
-                    }
-                });
-
-            } catch (Exception e) {
-                Log.e(TAG,"failed to fetch url: ", e);
-
-            }
-            return null;
+                //System.out.println("string [0] is :"+string[0]);
+                //use geocoding_request to get POI in carmenfeatures returned by geocoding request
+            return  new Geocoding_request(strings[0]).fetchPOI();
+            //use mapboxgeocdoing wrapper to get carmenfeatures
+            //return  new Geocoding_request(strings[0]).returnfeature();
         }
 
+        @Override
+        protected void onPostExecute(List<POI> carmenFeaturesPOI) {
+            //draw returned POI icons
+            Icon icon = IconFactory.getInstance(MapActivity.this).fromResource(R.drawable.mapbox_logo_icon);
+            for (int i=0;i<carmenFeaturesPOI.size();i++){
+                MapActivity.this.mMapboxMap.addMarker(new MarkerOptions().position(new LatLng(carmenFeaturesPOI.get(i).lat,carmenFeaturesPOI.get(i).lon)).
+                        title(carmenFeaturesPOI.get(i).getPlacename())).setIcon(icon);
+            }
+
+
+
+        }
     }
 
 

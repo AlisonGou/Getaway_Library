@@ -1,7 +1,6 @@
 package com.example.alisongou.getaway_library;
 
 import android.net.Uri;
-import android.util.Log;
 
 import com.mapbox.api.geocoding.v5.models.CarmenFeature;
 import com.mapbox.api.geocoding.v5.models.GeocodingResponse;
@@ -11,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Geocoding_request{
@@ -18,7 +18,10 @@ public class Geocoding_request{
     private static final String token ="pk.eyJ1IjoiYWxpc29uZ291IiwiYSI6ImNqcGFwdXc5czAyOWgzbG9mZmsyNTh2a2wifQ.FSS06iLZDD3cJ4exXRyZuA";
     private String keywords;
     private String joinstring;
+    private List<CarmenFeature> geofeatures;
     private List<CarmenFeature> features;
+    List<POI> mPOIList;
+
     public Geocoding_request(String querykeyword){
         keywords=querykeyword;
         return;
@@ -58,8 +61,7 @@ public class Geocoding_request{
 
         return new String(getURLBytes(urlSpc));
     }
-
-    public List<CarmenFeature> fetchresult() {
+    public List<CarmenFeature> fetchcarmenfeatures() {
         try {
             //construct url
             String url = Uri.parse("https://api.mapbox.com/geocoding/v5/mapbox.places/").buildUpon().
@@ -70,18 +72,50 @@ public class Geocoding_request{
             joinstring = getURLString(url);
             features = GeocodingResponse.fromJson(joinstring).features();
             System.out.println("carmenfeatures are "+features);
-            Log.i(TAG, "received json: " + joinstring);
+
+            //Log.i(TAG, "received json: " + joinstring);
         } catch (IOException e) {
-            Log.e(TAG, "failed to fetch json", e);
+            //Log.e(TAG, "failed to fetch json", e);
 
         }
-        System.out.println("fetchresult is : "+joinstring);
         return features;
+    }
+    public List<POI> fetchPOI() {
+        mPOIList = new ArrayList<>();
+        try {
+            //construct url
+            String url = Uri.parse("https://api.mapbox.com/geocoding/v5/mapbox.places/").buildUpon().
+                    appendPath(keywords + ".json").appendQueryParameter("access_token", token).build().toString();
+            System.out.println("url is :" + url);
+
+            //receive result as string
+            joinstring = getURLString(url);
+            features = GeocodingResponse.fromJson(joinstring).features();
+            System.out.println("carmenfeatures are "+features);
+            parsefeatures(mPOIList,features);
+
+            //Log.i(TAG, "received json: " + joinstring);
+        } catch (IOException e) {
+            //Log.e(TAG, "failed to fetch json", e);
+
+        }
+        //System.out.println("fetchresult is : "+joinstring);
+        return mPOIList;
 
 
     }
+    public void parsefeatures(List<POI> poilist, List<CarmenFeature> carmenFeatures){
+        POI poi=new POI();
+        System.out.println("carmen size is"+carmenFeatures.size());
+        for(int i=0;i<carmenFeatures.size();i++){
+            poi.setLat(carmenFeatures.get(i).center().latitude());
+            poi.setLon(carmenFeatures.get(i).center().longitude());
+            poi.setPlacename(carmenFeatures.get(i).placeName());
+            System.out.println("carmenfeatureplacename is"+carmenFeatures.get(i).placeName());
+            poilist.add(poi);
+        }
 
-
-
+        System.out.println("list of POI is :" + poilist);
+    }
 
 }

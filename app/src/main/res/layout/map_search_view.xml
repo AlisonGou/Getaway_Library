@@ -1,24 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="match_parent">
 
   <android.support.v7.widget.SearchView
       android:id="@+id/searchview"
-      android:layout_width="0dp"
+      android:layout_width="fill_parent"
       android:layout_height="wrap_content"
-      android:layout_weight="7"
-      android:clickable="true"
       android:background="#F0F0F0F0"
-
       />
 
-    <Spinner
-        android:id="@+id/spinner"
-        style="@style/Widget.AppCompat.ListView.DropDown"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_gravity="bottom"
-        android:paddingTop="20dp"
-        android:spinnerMode="dropdown"
-        android:theme="@style/Animation.AppCompat.DropDownUp" />
-</LinearLayout>
+
+
+</RelativeLayout>

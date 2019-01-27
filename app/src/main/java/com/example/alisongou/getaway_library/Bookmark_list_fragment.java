@@ -63,7 +63,7 @@ public class Bookmark_list_fragment extends Fragment {
 
     private class BookmarkHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         TextView mTextview;
-        TextView mDatetextview;
+        //TextView mDatetextview;
         CheckBox mcheckbox;
         private Bookmark mbookmark;
 
@@ -72,13 +72,13 @@ public class Bookmark_list_fragment extends Fragment {
             itemView.setOnClickListener(this);
             mTextview = (TextView)itemView.findViewById(R.id.list_item_bookmark_title_textview);
             mcheckbox = (CheckBox)itemView.findViewById(R.id.list_item_bookmark_checked);
-            mDatetextview=(TextView)itemView.findViewById(R.id.list_item_bookmark_Date_textview);
+            //mDatetextview=(TextView)itemView.findViewById(R.id.list_item_bookmark_Date_textview);
         }
 
         public void bindbookmark(Bookmark bookmark){
             mbookmark = bookmark;
             mTextview.setText(mbookmark.getBookmarkname());
-            mDatetextview.setText(mbookmark.getBookmarkaddeddate().toString());
+            //mDatetextview.setText(mbookmark.getBookmarkaddeddate().toString());
             mcheckbox.setChecked(mbookmark.isIschecked());
 
         }

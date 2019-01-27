@@ -4,6 +4,11 @@ import android.net.Uri;
 
 import com.mapbox.api.geocoding.v5.models.CarmenFeature;
 import com.mapbox.api.geocoding.v5.models.GeocodingResponse;
+import com.mapbox.geojson.Point;
+import com.mapbox.mapboxsdk.geometry.LatLng;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -21,6 +26,7 @@ public class Geocoding_request{
     private List<CarmenFeature> geofeatures;
     private List<CarmenFeature> features;
     List<POI> mPOIList;
+    List<LatLng> latLngList;
 
     public Geocoding_request(String querykeyword){
         keywords=querykeyword;
@@ -108,14 +114,48 @@ public class Geocoding_request{
         POI poi=new POI();
         System.out.println("carmen size is"+carmenFeatures.size());
         for(int i=0;i<carmenFeatures.size();i++){
-            poi.setLat(carmenFeatures.get(i).center().latitude());
-            poi.setLon(carmenFeatures.get(i).center().longitude());
-            poi.setPlacename(carmenFeatures.get(i).placeName());
-            System.out.println("carmenfeatureplacename is"+carmenFeatures.get(i).placeName());
+            //poi.setLat(point.latitude());
+            //poi.setLon(point.longitude());
+            //poi.setPlacename(carmenFeatures.get(i).placeName());
+            //System.out.println("carmenfeature geometry point lat"+point.latitude());
+
             poilist.add(poi);
         }
 
         System.out.println("list of POI is :" + poilist);
+    }
+    public List<LatLng> getLanLngList () {
+        latLngList = new ArrayList<>();
+        try {
+            //construct url
+            String url = Uri.parse("https://api.mapbox.com/geocoding/v5/mapbox.places/").buildUpon().
+                    appendPath(keywords + ".json").appendQueryParameter("access_token", token).build().toString();
+            System.out.println("url is :" + url);
+
+            //receive result as string
+            joinstring = getURLString(url);
+            features = GeocodingResponse.fromJson(joinstring).features();
+            System.out.println("carmenfeatures are "+features);
+            returnLatLnglist(latLngList,features);
+
+            //Log.i(TAG, "received json: " + joinstring);
+        } catch (IOException e) {
+            //Log.e(TAG, "failed to fetch json", e);
+
+        }
+        //System.out.println("fetchresult is : "+joinstring);
+        return latLngList;
+
+
+    }
+    public List<LatLng> returnLatLnglist(List<LatLng> latLngList,List<CarmenFeature> carmenFeatures){
+        LatLng latLng = new LatLng();
+        for(int i=0;i<carmenFeatures.size();i++){
+            latLng.setLatitude(carmenFeatures.get(i).center().latitude());
+            latLng.setLongitude(carmenFeatures.get(i).center().longitude());
+            latLngList.add(latLng);
+        }
+        return latLngList;
     }
 
 }

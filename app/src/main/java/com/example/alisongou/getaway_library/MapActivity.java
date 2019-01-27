@@ -24,9 +24,11 @@ import com.mapbox.android.core.permissions.PermissionsManager;
 import com.mapbox.api.geocoding.v5.MapboxGeocoding;
 import com.mapbox.api.geocoding.v5.models.CarmenFeature;
 import com.mapbox.api.geocoding.v5.models.GeocodingResponse;
+import com.mapbox.geojson.Point;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.annotations.Icon;
 import com.mapbox.mapboxsdk.annotations.IconFactory;
+import com.mapbox.mapboxsdk.annotations.Marker;
 import com.mapbox.mapboxsdk.annotations.MarkerOptions;
 import com.mapbox.mapboxsdk.camera.CameraPosition;
 import com.mapbox.mapboxsdk.constants.Style;
@@ -40,6 +42,7 @@ import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.mapbox.mapboxsdk.maps.SupportMapFragment;
 import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -52,10 +55,13 @@ public class MapActivity extends AppCompatActivity implements  PermissionsListen
     private PermissionsManager mPermissionsManager;
     private SearchView searchView;
     private static final String TAG = "MapActivity";
+
     private GeoJsonSource geoJson;
     private List<CarmenFeature> mFeatures;
     private String COLUMN_NAME_ADDRESS ="address";
-    private String[] mCollumnNames = {BaseColumns._ID,COLUMN_NAME_ADDRESS};
+    private String lat;
+    private String lng;
+    private String[] mCollumnNames = {BaseColumns._ID,COLUMN_NAME_ADDRESS,lat,lng};
 
 
 
@@ -125,14 +131,29 @@ public class MapActivity extends AppCompatActivity implements  PermissionsListen
 
                             try {
                                 List<CarmenFeature> results = response.body().features();
-                                //System.out.println("geocoding resut is "+results);
+                                System.out.println("geocoding resut is "+results);
+                                MapActivity.this.mMapboxMap.clear();
+                                Icon icon = IconFactory.getInstance(MapActivity.this).fromResource(R.drawable.mapbox_logo_icon);
+                                for (int i=0;i<results.size();i++){
+                                    MapActivity.this.mMapboxMap.addMarker(new MarkerOptions().position(new LatLng(results.get(i).center().latitude(),results.get(i).center().longitude())).setTitle(results.get(i).placeName()).setIcon(icon));
+                                    MapActivity.this.mMapboxMap.setOnMarkerClickListener(new MapboxMap.OnMarkerClickListener() {
+                                        @Override
+                                        public boolean onMarkerClick(@NonNull Marker marker) {
+                                            Bookmark bookmark=new Bookmark();
+                                            Bookmarklab.get(MapActivity.this).addbookmark(bookmark);
+                                            Intent intent = GetawayLibrary_Viewpager_activity.newIntent(MapActivity.this,bookmark.getMbookmarkid());
+                                            startActivity(intent);
+                                            return false;
+                                        }
+                                    });
+                                    //System.out.println("latlng is :"+ results.get(i));
+                                }
 
                                 MatrixCursor suggestioncursor = new MatrixCursor(mCollumnNames);
                                 int key=0;
                                 //add each address of carmenfeature to a new row
                                 for (CarmenFeature carmenFeature : results){
-                                    suggestioncursor.addRow(new Object[]{key++,carmenFeature.placeName()});
-
+                                    suggestioncursor.addRow(new Object[]{key++,carmenFeature.placeName(),carmenFeature.center().latitude(),carmenFeature.center().longitude()});
                                 }
                                 String[] cols=new String[]{COLUMN_NAME_ADDRESS};
                                 int[] to = new int[]{R.id.suggestion_address};
@@ -148,14 +169,22 @@ public class MapActivity extends AppCompatActivity implements  PermissionsListen
 
                                     @Override
                                     public boolean onSuggestionClick(int position) {
-                                        //get the selected row
+                                       //get the selected row
                                         MatrixCursor selectedrow = (MatrixCursor)suggestionCursorAdapter.getItem(position);
                                         //get rows index
+                                        System.out.println("clicled postion is " +position);
                                         int selectedcursorindex = selectedrow.getColumnIndex(COLUMN_NAME_ADDRESS);
+                                        System.out.println("selectedrow is "+selectedrow.getColumnCount()+selectedrow.getCount());
+                                        /*int selectedcursorindex = selectedrow.getColumnIndex(lat);
+                                        int selectedcursorindex_lng = selectedrow.getColumnIndex(lng);
                                         //get string from the row at index
-                                        String address = selectedrow.getString(selectedcursorindex);
+                                        double lat = Double.parseDouble(selectedrow.getString(selectedcursorindex));
+                                        double lng = Double.parseDouble(selectedrow.getString(selectedcursorindex_lng));*/
                                         //System.out.println("suggestion address is"+address);
-                                        //searchView.setQuery(address,true);
+                                        /*IconFactory iconFactory = IconFactory.getInstance(MapActivity.this);
+                                        Icon icon = iconFactory.fromResource(R.drawable.mapbox_logo_icon);
+                                        MapActivity.this.mMapboxMap.addMarker(new MarkerOptions().position(new LatLng(lat,lng)).icon(icon));*/
+                                        //searchView.setQuery(address,true);*/
                                         return true;
                                     }
                                 });
@@ -183,6 +212,8 @@ public class MapActivity extends AppCompatActivity implements  PermissionsListen
 
 
     }
+
+
 
     private void hideKeyboard() {
         searchView.clearFocus();
@@ -259,16 +290,14 @@ public class MapActivity extends AppCompatActivity implements  PermissionsListen
         }
 
         @Override
-        protected void onPostExecute(List<POI> carmenFeaturesPOI) {
+        protected void onPostExecute(List<POI> POIlist) {
             //draw returned POI icons
+            System.out.println("onpost poi list is"+POIlist);
             Icon icon = IconFactory.getInstance(MapActivity.this).fromResource(R.drawable.mapbox_logo_icon);
-            for (int i=0;i<carmenFeaturesPOI.size();i++){
-                MapActivity.this.mMapboxMap.addMarker(new MarkerOptions().position(new LatLng(carmenFeaturesPOI.get(i).lat,carmenFeaturesPOI.get(i).lon)).
-                        title(carmenFeaturesPOI.get(i).getPlacename())).setIcon(icon);
+            for (int i=0;i<POIlist.size();i++){
+                MapActivity.this.mMapboxMap.addMarker(new MarkerOptions().position(new LatLng(POIlist.get(i).getLat(),POIlist.get(i).getLon())).setIcon(icon));
+                System.out.println("latlng is :"+ POIlist.get(i));
             }
-
-
-
         }
     }
 

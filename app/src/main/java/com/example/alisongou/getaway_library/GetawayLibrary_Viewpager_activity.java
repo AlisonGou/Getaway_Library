@@ -38,9 +38,6 @@ public class GetawayLibrary_Viewpager_activity extends AppCompatActivity {
         setContentView(R.layout.getawaylibrary_viewpager_activity);
         mViewpager=(ViewPager) findViewById(R.id.getawayactivity_viewpager);
 
-        Mapbox.getInstance(this, getString(R.string.accesstoken));
-
-
         mbookmarks=Bookmarklab.get(this).getBookmarkList();
         FragmentManager fragmentManager = getSupportFragmentManager();
         mViewpager.setAdapter(new FragmentStatePagerAdapter(fragmentManager) {

@@ -3,7 +3,8 @@
     <string name="bookmark_checked">place checked</string>
     <string name="bookmark_title_label">bookmark name</string>
     <string name="bookmark_details_label">memos</string>
-    <string name="bookmarkname_hint">enter a name for bookmark</string>
+    <string name="bookmarkname_hint">put your dream place name here</string>
+    <string name="place_address">enter address here</string>
     <string name="date_picker_title">Date of adding</string>
     <string name="input_memos">input memos</string>
     <string name="accesstoken">pk.eyJ1IjoiYWxpc29uZ291IiwiYSI6ImNqcGFwdXc5czAyOWgzbG9mZmsyNTh2a2wifQ.FSS06iLZDD3cJ4exXRyZuA</string>

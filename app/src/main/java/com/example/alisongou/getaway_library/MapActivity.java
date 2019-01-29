@@ -112,9 +112,9 @@ public class MapActivity extends AppCompatActivity implements  PermissionsListen
                 //System.out.println("searchview the input word is:"+query);
 
                 //execute task
-                FetchPOITask fetchPOITask = new FetchPOITask();
-                fetchPOITask.execute(query);
-                searchView.clearFocus();
+                //FetchPOITask fetchPOITask = new FetchPOITask();
+                //fetchPOITask.execute(query);
+                //searchView.clearFocus();
                 return true;
             }
 
@@ -130,16 +130,24 @@ public class MapActivity extends AppCompatActivity implements  PermissionsListen
                         public void onResponse(Call<GeocodingResponse> call, Response<GeocodingResponse> response) {
 
                             try {
+                                MapActivity.this.mMapboxMap.clear();
                                 List<CarmenFeature> results = response.body().features();
                                 System.out.println("geocoding resut is "+results);
-                                MapActivity.this.mMapboxMap.clear();
-                                Icon icon = IconFactory.getInstance(MapActivity.this).fromResource(R.drawable.mapbox_logo_icon);
+                                Icon icon = IconFactory.getInstance(MapActivity.this).fromResource(R.drawable.ic_menu_gotolist);
                                 for (int i=0;i<results.size();i++){
+                                    //get placename to put as bookmarkname
+                                    String placeName = results.get(i).text();
+                                    System.out.println("pa");
+                                    //get address to put as memos
+                                    String address = results.get(i).address();
                                     MapActivity.this.mMapboxMap.addMarker(new MarkerOptions().position(new LatLng(results.get(i).center().latitude(),results.get(i).center().longitude())).setTitle(results.get(i).placeName()).setIcon(icon));
                                     MapActivity.this.mMapboxMap.setOnMarkerClickListener(new MapboxMap.OnMarkerClickListener() {
                                         @Override
                                         public boolean onMarkerClick(@NonNull Marker marker) {
                                             Bookmark bookmark=new Bookmark();
+                                            bookmark.setBookmarkname(placeName);
+
+
                                             Bookmarklab.get(MapActivity.this).addbookmark(bookmark);
                                             Intent intent = GetawayLibrary_Viewpager_activity.newIntent(MapActivity.this,bookmark.getMbookmarkid());
                                             startActivity(intent);
@@ -164,27 +172,34 @@ public class MapActivity extends AppCompatActivity implements  PermissionsListen
                                 searchView.setOnSuggestionListener(new SearchView.OnSuggestionListener() {
                                     @Override
                                     public boolean onSuggestionSelect(int position) {
+                                        Toast.makeText(MapActivity.this, "onSuggestionSelect", Toast.LENGTH_LONG).show();
                                         return true;
                                     }
 
                                     @Override
                                     public boolean onSuggestionClick(int position) {
+                                        Toast.makeText(MapActivity.this, "onSuggestionClick", Toast.LENGTH_LONG).show();
                                        //get the selected row
                                         MatrixCursor selectedrow = (MatrixCursor)suggestionCursorAdapter.getItem(position);
                                         //get rows index
                                         System.out.println("clicled postion is " +position);
                                         int selectedcursorindex = selectedrow.getColumnIndex(COLUMN_NAME_ADDRESS);
-                                        System.out.println("selectedrow is "+selectedrow.getColumnCount()+selectedrow.getCount());
-                                        /*int selectedcursorindex = selectedrow.getColumnIndex(lat);
-                                        int selectedcursorindex_lng = selectedrow.getColumnIndex(lng);
-                                        //get string from the row at index
-                                        double lat = Double.parseDouble(selectedrow.getString(selectedcursorindex));
-                                        double lng = Double.parseDouble(selectedrow.getString(selectedcursorindex_lng));*/
-                                        //System.out.println("suggestion address is"+address);
-                                        /*IconFactory iconFactory = IconFactory.getInstance(MapActivity.this);
+                                        String address = selectedrow.getString(selectedcursorindex);
+                                        System.out.println("address is"+address);
+                                        //System.out.println("selectedrow is "+selectedrow.getColumnCount()+selectedrow.getCount());
+
+                                        Double lat = Double.parseDouble(selectedrow.getString(selectedcursorindex+1));
+                                        Double lng = Double.parseDouble(selectedrow.getString(selectedcursorindex+2));
+
+                                        System.out.println("lat and lng are "+lat+" , "+lng);
+
+                                        mMapboxMap.clear();
+                                        CameraPosition cameraPosition = new CameraPosition.Builder().target(new LatLng(lat,lng)).zoom(20).build();
+                                        mMapboxMap.setCameraPosition(cameraPosition);
+                                        IconFactory iconFactory = IconFactory.getInstance(MapActivity.this);
                                         Icon icon = iconFactory.fromResource(R.drawable.mapbox_logo_icon);
-                                        MapActivity.this.mMapboxMap.addMarker(new MarkerOptions().position(new LatLng(lat,lng)).icon(icon));*/
-                                        //searchView.setQuery(address,true);*/
+                                        MapActivity.this.mMapboxMap.addMarker(new MarkerOptions().position(new LatLng(lat,lng)).icon(icon));
+
                                         return true;
                                     }
                                 });

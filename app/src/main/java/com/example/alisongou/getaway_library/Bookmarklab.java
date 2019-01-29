@@ -38,6 +38,7 @@ public class Bookmarklab {
         contentValues.put(BookmarkTable.cols.NAME, bookmark.getBookmarkname());
         contentValues.put(BookmarkTable.cols.Checked,bookmark.isIschecked()?1:0);
         contentValues.put(BookmarkTable.cols.DATE,bookmark.getBookmarkaddeddate().toString());
+        contentValues.put(BookmarkTable.cols.ADDRESS,bookmark.getAddress().toString());
         return contentValues;
     }
 

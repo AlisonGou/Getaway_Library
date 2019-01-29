@@ -146,7 +146,7 @@ public class MapActivity extends AppCompatActivity implements  PermissionsListen
                                         public boolean onMarkerClick(@NonNull Marker marker) {
                                             Bookmark bookmark=new Bookmark();
                                             bookmark.setBookmarkname(placeName);
-
+                                            //bookmark.setAddress(address);
 
                                             Bookmarklab.get(MapActivity.this).addbookmark(bookmark);
                                             Intent intent = GetawayLibrary_Viewpager_activity.newIntent(MapActivity.this,bookmark.getMbookmarkid());
@@ -292,7 +292,7 @@ public class MapActivity extends AppCompatActivity implements  PermissionsListen
     }
 
 
-    //define AsyncTask to retrieve geocoding
+    //define AsyncTask to retrieve geocoding (currently not being used)
     public class FetchPOITask extends AsyncTask<String,Void,List<POI>>{
         @Override
         protected List<POI> doInBackground(String...strings) {
@@ -317,5 +317,6 @@ public class MapActivity extends AppCompatActivity implements  PermissionsListen
     }
 
 
-
 }
+
+

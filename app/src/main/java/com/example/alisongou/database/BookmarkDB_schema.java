@@ -9,6 +9,7 @@ public class BookmarkDB_schema {
             public static final String DATE ="date";
             public static final String Checked ="ischecked";
             public static final String NAME="name";
+            public static final String ADDRESS="address";
             public static final String UUID="uuid";
         }
     }

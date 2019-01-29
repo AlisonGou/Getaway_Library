@@ -12,6 +12,7 @@ public class Bookmark {
     private UUID mbookmarkid;
     private Date bookmarkaddeddate;
     private String bookmarkname;
+    private String address;
     private boolean ischecked;
 
     public Bookmark(UUID uuid){
@@ -43,6 +44,8 @@ public class Bookmark {
         return bookmarkname;
     }
 
+    public String getAddress(){return address;}
+
     public boolean isIschecked() {
         return ischecked;
     }
@@ -54,4 +57,7 @@ public class Bookmark {
     public void setBookmarkname(String bookmarkname) {
         this.bookmarkname = bookmarkname;
     }
+
+    public void setAddress(String address){this.address = address;}
+
 }

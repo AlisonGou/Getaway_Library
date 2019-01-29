@@ -29,6 +29,7 @@ public class Bookmark_Fragment extends Fragment {
 
     private Bookmark mBookmark;
     private EditText mEditText;
+    private EditText address;
     private Button mDateButton;
     private CheckBox mCheckBox;
     private static final String ARG_BOOK_ID="book id";
@@ -73,6 +74,26 @@ public class Bookmark_Fragment extends Fragment {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 mBookmark.setBookmarkname(s.toString());
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        address = view.findViewById(R.id.address);
+        address.setText(mBookmark.getAddress());
+        address.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                mBookmark.setAddress(s.toString());
 
             }
 

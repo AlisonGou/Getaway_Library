@@ -22,9 +22,10 @@ public class Bookmark_Openhelper extends SQLiteOpenHelper{
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("create table " + BookmarkTable.NAME + " ( " + " _id integer primary key autoincrement," +
+        db.execSQL("create table " + BookmarkTable.NAME + "(" + " _id integer primary key autoincrement, " +
         BookmarkTable.cols.UUID + ", " + BookmarkTable.cols.Checked + ", " + BookmarkTable.cols.DATE
-        + "," + BookmarkTable.cols.NAME + ")");
+        + ", " + BookmarkTable.cols.NAME + ", " + BookmarkTable.cols.ADDRESS + ")"
+        );
     }
 
     @Override

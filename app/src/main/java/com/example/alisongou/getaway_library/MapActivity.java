@@ -16,7 +16,10 @@ import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mapbox.android.core.permissions.PermissionsListener;
@@ -24,7 +27,6 @@ import com.mapbox.android.core.permissions.PermissionsManager;
 import com.mapbox.api.geocoding.v5.MapboxGeocoding;
 import com.mapbox.api.geocoding.v5.models.CarmenFeature;
 import com.mapbox.api.geocoding.v5.models.GeocodingResponse;
-import com.mapbox.geojson.Point;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.annotations.Icon;
 import com.mapbox.mapboxsdk.annotations.IconFactory;
@@ -42,7 +44,6 @@ import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.mapbox.mapboxsdk.maps.SupportMapFragment;
 import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -58,11 +59,15 @@ public class MapActivity extends AppCompatActivity implements  PermissionsListen
 
     private GeoJsonSource geoJson;
     private List<CarmenFeature> mFeatures;
+    private String NAME = "name";
     private String COLUMN_NAME_ADDRESS ="address";
     private String lat;
     private String lng;
-    private String[] mCollumnNames = {BaseColumns._ID,COLUMN_NAME_ADDRESS,lat,lng};
+    private String[] mCollumnNames = {BaseColumns._ID,NAME,COLUMN_NAME_ADDRESS,lat,lng};
 
+    private TextView bottomtextview;
+    private Button gotobutton;
+    private Button collectbutton;
 
 
 
@@ -102,7 +107,10 @@ public class MapActivity extends AppCompatActivity implements  PermissionsListen
                 enablelocationcomponent();
             }
         });
-
+        //setup bottom textview
+        bottomtextview = (TextView)findViewById(R.id.addresstextview);
+        gotobutton =(Button)findViewById(R.id.gobutton);
+        collectbutton=(Button)findViewById(R.id.collectbotton);
         //setup searchview
         searchView=(SearchView) findViewById(R.id.searchview);
         searchView.setIconified(true);
@@ -133,35 +141,25 @@ public class MapActivity extends AppCompatActivity implements  PermissionsListen
                                 MapActivity.this.mMapboxMap.clear();
                                 List<CarmenFeature> results = response.body().features();
                                 System.out.println("geocoding resut is "+results);
-                                Icon icon = IconFactory.getInstance(MapActivity.this).fromResource(R.drawable.ic_menu_gotolist);
+                                Icon icon = IconFactory.getInstance(MapActivity.this).fromResource(R.drawable.POI);
                                 for (int i=0;i<results.size();i++){
-                                    //get placename to put as bookmarkname
-                                    String placeName = results.get(i).text();
-                                    System.out.println("pa");
-                                    //get address to put as memos
-                                    String address = results.get(i).address();
                                     MapActivity.this.mMapboxMap.addMarker(new MarkerOptions().position(new LatLng(results.get(i).center().latitude(),results.get(i).center().longitude())).setTitle(results.get(i).placeName()).setIcon(icon));
                                     MapActivity.this.mMapboxMap.setOnMarkerClickListener(new MapboxMap.OnMarkerClickListener() {
                                         @Override
                                         public boolean onMarkerClick(@NonNull Marker marker) {
-                                            Bookmark bookmark=new Bookmark();
-                                            bookmark.setBookmarkname(placeName);
-                                            //bookmark.setAddress(address);
 
-                                            Bookmarklab.get(MapActivity.this).addbookmark(bookmark);
-                                            Intent intent = GetawayLibrary_Viewpager_activity.newIntent(MapActivity.this,bookmark.getMbookmarkid());
-                                            startActivity(intent);
                                             return false;
                                         }
                                     });
                                     //System.out.println("latlng is :"+ results.get(i));
                                 }
 
+
                                 MatrixCursor suggestioncursor = new MatrixCursor(mCollumnNames);
                                 int key=0;
                                 //add each address of carmenfeature to a new row
                                 for (CarmenFeature carmenFeature : results){
-                                    suggestioncursor.addRow(new Object[]{key++,carmenFeature.placeName(),carmenFeature.center().latitude(),carmenFeature.center().longitude()});
+                                    suggestioncursor.addRow(new Object[]{key++,carmenFeature.text(),carmenFeature.placeName(),carmenFeature.center().latitude(),carmenFeature.center().longitude()});
                                 }
                                 String[] cols=new String[]{COLUMN_NAME_ADDRESS};
                                 int[] to = new int[]{R.id.suggestion_address};
@@ -178,8 +176,11 @@ public class MapActivity extends AppCompatActivity implements  PermissionsListen
 
                                     @Override
                                     public boolean onSuggestionClick(int position) {
-                                        Toast.makeText(MapActivity.this, "onSuggestionClick", Toast.LENGTH_LONG).show();
-                                       //get the selected row
+                                        //Toast.makeText(MapActivity.this, "onSuggestionClick", Toast.LENGTH_LONG).show();
+
+                                        MapActivity.this.mMapboxMap.clear();
+
+                                        //get the selected row
                                         MatrixCursor selectedrow = (MatrixCursor)suggestionCursorAdapter.getItem(position);
                                         //get rows index
                                         System.out.println("clicled postion is " +position);
@@ -193,13 +194,49 @@ public class MapActivity extends AppCompatActivity implements  PermissionsListen
 
                                         System.out.println("lat and lng are "+lat+" , "+lng);
 
-                                        mMapboxMap.clear();
+                                        String placename = selectedrow.getString(selectedcursorindex-1);
+
+                                        bottomtextview.setText(address);
+                                        bottomtextview.setVisibility(View.VISIBLE);
+
+
+                                        gotobutton.setVisibility(View.VISIBLE);
+                                        gotobutton.setBackgroundResource(R.drawable.direct);
+                                        gotobutton.setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+
+                                            }
+                                        });
+                                        collectbutton.setVisibility(View.VISIBLE);
+                                        collectbutton.setBackgroundResource(R.drawable.collect);
+                                        collectbutton.setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+                                                Bookmark bookmark=new Bookmark();
+                                                bookmark.setBookmarkname(placename);
+                                                bookmark.setAddress(address);
+
+                                                Bookmarklab.get(MapActivity.this).addbookmark(bookmark);
+                                                Intent intent = GetawayLibrary_Viewpager_activity.newIntent(MapActivity.this,bookmark.getMbookmarkid());
+                                                startActivity(intent);
+                                            }
+                                        });
+
                                         CameraPosition cameraPosition = new CameraPosition.Builder().target(new LatLng(lat,lng)).zoom(20).build();
                                         mMapboxMap.setCameraPosition(cameraPosition);
                                         IconFactory iconFactory = IconFactory.getInstance(MapActivity.this);
-                                        Icon icon = iconFactory.fromResource(R.drawable.mapbox_logo_icon);
-                                        MapActivity.this.mMapboxMap.addMarker(new MarkerOptions().position(new LatLng(lat,lng)).icon(icon));
+                                        Icon icon = iconFactory.fromResource(R.drawable.POI);
 
+                                        //get address to put as ADDRESS
+                                        MapActivity.this.mMapboxMap.addMarker(new MarkerOptions().position(new LatLng(lat,lng)).icon(icon));
+                                        MapActivity.this.mMapboxMap.setOnMarkerClickListener(new MapboxMap.OnMarkerClickListener() {
+                                            @Override
+                                            public boolean onMarkerClick(@NonNull Marker marker) {
+
+                                                return false;
+                                            }
+                                        });
                                         return true;
                                     }
                                 });

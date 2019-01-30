@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent">
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent" android:layout_height="match_parent">
 
   <android.support.v7.widget.SearchView
       android:id="@+id/searchview"
@@ -8,6 +9,44 @@
       android:layout_height="wrap_content"
       android:background="#F0F0F0F0"
       />
+
+    <TextView
+        android:id="@+id/addresstextview"
+        style="?android:listSeparatorTextViewStyle"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="50dp"
+        android:layout_marginTop="380dp"
+        android:background="#F0F0F0F0"
+        android:textAlignment="center"
+        android:visibility="invisible"
+        />
+
+
+    <Button
+        android:id="@+id/collectbotton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:background="#F0F0F0F0"
+        android:text="collect"
+        android:textColor="@color/mapbox_blue"
+        android:visibility="invisible"/>
+
+    <Button
+        android:id="@+id/gobutton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:background="#F0F0F0F0"
+        android:text="take me there"
+        android:textColor="@color/mapbox_blue"
+        android:visibility="invisible"/>
+
+
 
 
 

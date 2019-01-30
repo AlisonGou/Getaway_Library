@@ -15,6 +15,7 @@ public class Bookmark {
     private String address;
     private boolean ischecked;
 
+
     public Bookmark(UUID uuid){
        mbookmarkid = uuid;
        bookmarkaddeddate = new Date();

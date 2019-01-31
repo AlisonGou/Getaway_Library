@@ -141,7 +141,7 @@ public class MapActivity extends AppCompatActivity implements  PermissionsListen
                                 MapActivity.this.mMapboxMap.clear();
                                 List<CarmenFeature> results = response.body().features();
                                 System.out.println("geocoding resut is "+results);
-                                Icon icon = IconFactory.getInstance(MapActivity.this).fromResource(R.drawable.POI);
+                                Icon icon = IconFactory.getInstance(MapActivity.this).fromResource(R.drawable.mypoi);
                                 for (int i=0;i<results.size();i++){
                                     MapActivity.this.mMapboxMap.addMarker(new MarkerOptions().position(new LatLng(results.get(i).center().latitude(),results.get(i).center().longitude())).setTitle(results.get(i).placeName()).setIcon(icon));
                                     MapActivity.this.mMapboxMap.setOnMarkerClickListener(new MapboxMap.OnMarkerClickListener() {
@@ -170,7 +170,7 @@ public class MapActivity extends AppCompatActivity implements  PermissionsListen
                                 searchView.setOnSuggestionListener(new SearchView.OnSuggestionListener() {
                                     @Override
                                     public boolean onSuggestionSelect(int position) {
-                                        Toast.makeText(MapActivity.this, "onSuggestionSelect", Toast.LENGTH_LONG).show();
+                                        Toast.makeText(MapActivity.this, "onSuggestionSelect", Toast.LENGTH_SHORT).show();
                                         return true;
                                     }
 
@@ -226,7 +226,7 @@ public class MapActivity extends AppCompatActivity implements  PermissionsListen
                                         CameraPosition cameraPosition = new CameraPosition.Builder().target(new LatLng(lat,lng)).zoom(20).build();
                                         mMapboxMap.setCameraPosition(cameraPosition);
                                         IconFactory iconFactory = IconFactory.getInstance(MapActivity.this);
-                                        Icon icon = iconFactory.fromResource(R.drawable.POI);
+                                        Icon icon = iconFactory.fromResource(R.drawable.mypoi);
 
                                         //get address to put as ADDRESS
                                         MapActivity.this.mMapboxMap.addMarker(new MarkerOptions().position(new LatLng(lat,lng)).icon(icon));

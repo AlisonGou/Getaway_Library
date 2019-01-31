@@ -34,7 +34,7 @@
                                           <PersistentState>
                                             <option name="values">
                                               <map>
-                                                <entry key="url" value="jar:file:/D:/Program%20Files/Android/Android%20Studio/plugins/android/lib/android.jar!/images/material_design_icons/image/ic_collections_bookmark_black_24dp.xml" />
+                                                <entry key="url" value="jar:file:/D:/Program%20Files/Android/Android%20Studio/plugins/android/lib/android.jar!/images/material_design_icons/communication/ic_location_on_black_24dp.xml" />
                                               </map>
                                             </option>
                                           </PersistentState>
@@ -44,9 +44,9 @@
                                   </option>
                                   <option name="values">
                                     <map>
-                                      <entry key="outputName" value="collect" />
+                                      <entry key="outputName" value="mypoi" />
                                       <entry key="theme" value="CUSTOM" />
-                                      <entry key="themeColor" value="73e5c4" />
+                                      <entry key="themeColor" value="150ae5" />
                                     </map>
                                   </option>
                                 </PersistentState>

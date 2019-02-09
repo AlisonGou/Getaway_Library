@@ -1,5 +1,10 @@
 # Getaway_Library-master
-note1: 
-  一个app中两个activity中都需要地图，但是现在只能显示一个。
-note2:
-   如果使用单例，目前发现回跳到启动activity会闪退。
+
+What does this app do?
+The main idea is to create a wishlist of desriable spots of your own, which you can come back later to visit them all.
+
+This app features Mapbox Map API, Geocoding API to create a LBS_app.
+
+Users can either search the place name on map and then add the place to a wishlist, or can add the place directly in the wishlist.
+
+

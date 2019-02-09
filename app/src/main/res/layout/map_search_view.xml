@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent" android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
   <android.support.v7.widget.SearchView
       android:id="@+id/searchview"
@@ -10,7 +11,7 @@
       android:background="#F0F0F0F0"
       />
 
-    <TextView
+    <!--<TextView
         android:id="@+id/addresstextview"
         style="?android:listSeparatorTextViewStyle"
         android:layout_width="fill_parent"
@@ -21,33 +22,17 @@
         android:background="#F0F0F0F0"
         android:textAlignment="center"
         android:visibility="invisible"
-        />
-
-
-    <Button
-        android:id="@+id/collectbotton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"
-        android:background="#F0F0F0F0"
-        android:text="collect"
-        android:textColor="@color/mapbox_blue"
-        android:visibility="invisible"/>
-
-    <Button
-        android:id="@+id/gobutton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:background="#F0F0F0F0"
-        android:text="take me there"
-        android:textColor="@color/mapbox_blue"
-        android:visibility="invisible"/>
-
-
-
+        />-->
+  <android.support.design.widget.BottomNavigationView
+      android:id= "@+id/bottom_navigation"
+      android:layout_alignParentBottom="true"
+      app:itemBackground ="@color/colorPrimary"
+      app:itemIconTint="#F0F0F0F0"
+      app:itemTextColor="#F0F0F0F0"
+      app:menu="@menu/bottom_navigation_main"
+      android:layout_height="wrap_content"
+      android:layout_width="match_parent"
+      android:visibility="invisible"/>
 
 
 </RelativeLayout>

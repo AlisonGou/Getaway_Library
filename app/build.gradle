@@ -25,6 +25,7 @@ android {
 }
 
 dependencies {
+    implementation 'com.android.support:design:27.1.1'
     implementation 'com.mapbox.mapboxsdk:mapbox-sdk-core:4.3.0'
     implementation 'com.mapbox.mapboxsdk:mapbox-sdk-geojson:4.3.0'
     implementation 'com.mapbox.mapboxsdk:mapbox-sdk-services:4.3.0'

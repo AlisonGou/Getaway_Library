@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/bottom_wishlist"
+        android:enabled="true"
+        android:icon="@drawable/wishlist"
+        android:title="@string/wishlist"
+        app:showAsAction = "ifRoom"/>
+    <item
+        android:id="@+id/bottom_navigation"
+        android:enabled="true"
+        android:title="@string/navigation"
+        android:icon="@drawable/navigation"
+        app:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/bottom_location"
+        android:enabled="true"
+        android:title="@string/location"
+        android:icon="@drawable/location"
+        app:showAsAction="ifRoom"/>
+</menu>

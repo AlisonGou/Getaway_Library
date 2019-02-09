@@ -1,14 +1,18 @@
 package com.example.alisongou.getaway_library;
 
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.MatrixCursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.BaseColumns;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.AppCompatActivity;
@@ -18,8 +22,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mapbox.android.core.permissions.PermissionsListener;
@@ -27,12 +29,14 @@ import com.mapbox.android.core.permissions.PermissionsManager;
 import com.mapbox.api.geocoding.v5.MapboxGeocoding;
 import com.mapbox.api.geocoding.v5.models.CarmenFeature;
 import com.mapbox.api.geocoding.v5.models.GeocodingResponse;
+import com.mapbox.geojson.Point;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.annotations.Icon;
 import com.mapbox.mapboxsdk.annotations.IconFactory;
 import com.mapbox.mapboxsdk.annotations.Marker;
 import com.mapbox.mapboxsdk.annotations.MarkerOptions;
 import com.mapbox.mapboxsdk.camera.CameraPosition;
+import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
 import com.mapbox.mapboxsdk.constants.Style;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.location.LocationComponent;
@@ -51,7 +55,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 
-public class MapActivity extends AppCompatActivity implements  PermissionsListener {
+public class MapActivity extends AppCompatActivity implements PermissionsListener {
     private MapboxMap mMapboxMap;
     private PermissionsManager mPermissionsManager;
     private SearchView searchView;
@@ -60,15 +64,11 @@ public class MapActivity extends AppCompatActivity implements  PermissionsListen
     private GeoJsonSource geoJson;
     private List<CarmenFeature> mFeatures;
     private String NAME = "name";
-    private String COLUMN_NAME_ADDRESS ="address";
+    private String COLUMN_NAME_ADDRESS = "address";
     private String lat;
     private String lng;
-    private String[] mCollumnNames = {BaseColumns._ID,NAME,COLUMN_NAME_ADDRESS,lat,lng};
-
-    private TextView bottomtextview;
-    private Button gotobutton;
-    private Button collectbutton;
-
+    private String[] mCollumnNames = {BaseColumns._ID, NAME, COLUMN_NAME_ADDRESS, lat, lng};
+    private BottomNavigationView buttomnavigationview;
 
 
     @Override
@@ -107,12 +107,12 @@ public class MapActivity extends AppCompatActivity implements  PermissionsListen
                 enablelocationcomponent();
             }
         });
-        //setup bottom textview
-        bottomtextview = (TextView)findViewById(R.id.addresstextview);
-        gotobutton =(Button)findViewById(R.id.gobutton);
-        collectbutton=(Button)findViewById(R.id.collectbotton);
+
+        //setup bottomnavigationview
+        buttomnavigationview = findViewById(R.id.bottom_navigation);
+
         //setup searchview
-        searchView=(SearchView) findViewById(R.id.searchview);
+        searchView = findViewById(R.id.searchview);
         searchView.setIconified(true);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -128,7 +128,7 @@ public class MapActivity extends AppCompatActivity implements  PermissionsListen
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                if(newText!=null&newText.length()>1){
+                if (newText != null & newText.length() > 1) {
                     MapboxGeocoding mapboxGeocoding = MapboxGeocoding.builder()
                             .accessToken("pk.eyJ1IjoiYWxpc29uZ291IiwiYSI6ImNqcGFwdXc5czAyOWgzbG9mZmsyNTh2a2wifQ.FSS06iLZDD3cJ4exXRyZuA")
                             .query(newText)
@@ -140,15 +140,20 @@ public class MapActivity extends AppCompatActivity implements  PermissionsListen
                             try {
                                 MapActivity.this.mMapboxMap.clear();
                                 List<CarmenFeature> results = response.body().features();
-                                System.out.println("geocoding resut is "+results);
+
+                                //try to zoom the mapview to results
+                                Point centerpoint = results.get(0).center();
+                                CameraPosition centercameraPosition = new CameraPosition.Builder().target(new LatLng(centerpoint.latitude(),centerpoint.longitude())).build();
+                                MapActivity.this.mMapboxMap.animateCamera(CameraUpdateFactory.newCameraPosition(centercameraPosition),10);
+                                System.out.println("geocoding resut is " + results);
                                 Icon icon = IconFactory.getInstance(MapActivity.this).fromResource(R.drawable.mypoi);
-                                for (int i=0;i<results.size();i++){
-                                    MapActivity.this.mMapboxMap.addMarker(new MarkerOptions().position(new LatLng(results.get(i).center().latitude(),results.get(i).center().longitude())).setTitle(results.get(i).placeName()).setIcon(icon));
+                                for (int i = 0; i < results.size(); i++) {
+                                    MapActivity.this.mMapboxMap.addMarker(new MarkerOptions().position(new LatLng(results.get(i).center().latitude(), results.get(i).center().longitude())).setTitle(results.get(i).placeName()).setIcon(icon));
                                     MapActivity.this.mMapboxMap.setOnMarkerClickListener(new MapboxMap.OnMarkerClickListener() {
                                         @Override
                                         public boolean onMarkerClick(@NonNull Marker marker) {
 
-                                            return false;
+                                            return true;
                                         }
                                     });
                                     //System.out.println("latlng is :"+ results.get(i));
@@ -156,15 +161,15 @@ public class MapActivity extends AppCompatActivity implements  PermissionsListen
 
 
                                 MatrixCursor suggestioncursor = new MatrixCursor(mCollumnNames);
-                                int key=0;
+                                int key = 0;
                                 //add each address of carmenfeature to a new row
-                                for (CarmenFeature carmenFeature : results){
-                                    suggestioncursor.addRow(new Object[]{key++,carmenFeature.text(),carmenFeature.placeName(),carmenFeature.center().latitude(),carmenFeature.center().longitude()});
+                                for (CarmenFeature carmenFeature : results) {
+                                    suggestioncursor.addRow(new Object[]{key++, carmenFeature.text(), carmenFeature.placeName(), carmenFeature.center().latitude(), carmenFeature.center().longitude()});
                                 }
-                                String[] cols=new String[]{COLUMN_NAME_ADDRESS};
+                                String[] cols = new String[]{COLUMN_NAME_ADDRESS};
                                 int[] to = new int[]{R.id.suggestion_address};
                                 //define simplecursoradaptor
-                                SimpleCursorAdapter suggestionCursorAdapter = new SimpleCursorAdapter(MapActivity.this,R.layout.suggestion,suggestioncursor,cols,to,0);
+                                SimpleCursorAdapter suggestionCursorAdapter = new SimpleCursorAdapter(MapActivity.this, R.layout.suggestion, suggestioncursor, cols, to, 0);
                                 searchView.setSuggestionsAdapter(suggestionCursorAdapter);
                                 //handle an address suggestion being chose
                                 searchView.setOnSuggestionListener(new SearchView.OnSuggestionListener() {
@@ -181,47 +186,58 @@ public class MapActivity extends AppCompatActivity implements  PermissionsListen
                                         MapActivity.this.mMapboxMap.clear();
 
                                         //get the selected row
-                                        MatrixCursor selectedrow = (MatrixCursor)suggestionCursorAdapter.getItem(position);
+                                        MatrixCursor selectedrow = (MatrixCursor) suggestionCursorAdapter.getItem(position);
                                         //get rows index
-                                        System.out.println("clicled postion is " +position);
+                                        System.out.println("clicled postion is " + position);
                                         int selectedcursorindex = selectedrow.getColumnIndex(COLUMN_NAME_ADDRESS);
                                         String address = selectedrow.getString(selectedcursorindex);
-                                        System.out.println("address is"+address);
+                                        System.out.println("address is" + address);
                                         //System.out.println("selectedrow is "+selectedrow.getColumnCount()+selectedrow.getCount());
 
-                                        Double lat = Double.parseDouble(selectedrow.getString(selectedcursorindex+1));
-                                        Double lng = Double.parseDouble(selectedrow.getString(selectedcursorindex+2));
+                                        Double lat = Double.parseDouble(selectedrow.getString(selectedcursorindex + 1));
+                                        Double lng = Double.parseDouble(selectedrow.getString(selectedcursorindex + 2));
 
-                                        System.out.println("lat and lng are "+lat+" , "+lng);
+                                        System.out.println("lat and lng are " + lat + " , " + lng);
 
-                                        String placename = selectedrow.getString(selectedcursorindex-1);
+                                        String placename = selectedrow.getString(selectedcursorindex - 1);
 
-                                        bottomtextview.setText(address);
-                                        bottomtextview.setVisibility(View.VISIBLE);
-
-
-                                        gotobutton.setVisibility(View.VISIBLE);
-                                        gotobutton.setBackgroundResource(R.drawable.direct);
-                                        gotobutton.setOnClickListener(new View.OnClickListener() {
+                                        buttomnavigationview.setVisibility(View.VISIBLE);
+                                        buttomnavigationview.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
                                             @Override
-                                            public void onClick(View v) {
+                                            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                                                switch (item.getItemId()) {
+                                                    case R.id.bottom_wishlist:
+                                                        Bookmark bookmark = new Bookmark();
+                                                        bookmark.setBookmarkname(placename);
+                                                        bookmark.setAddress(address);
 
+                                                        Bookmarklab.get(MapActivity.this).addbookmark(bookmark);
+                                                        Intent intent = GetawayLibrary_Viewpager_activity.newIntent(MapActivity.this, bookmark.getMbookmarkid());
+                                                        startActivity(intent);
+                                                    case R.id.bottom_navigation:
+                                                    case R.id.bottom_location:
+                                                        if (ActivityCompat.checkSelfPermission(MapActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(MapActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                                                            // TODO: Consider calling
+                                                            //    ActivityCompat#requestPermissions
+                                                            // here to request the missing permissions, and then overriding
+                                                            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                                                            //                                          int[] grantResults)
+                                                            // to handle the case where the user grants the permission. See the documentation
+                                                            // for ActivityCompat#requestPermissions for more details.
+                                                        }
+                                                        CameraPosition cameraPosition = new CameraPosition.Builder().target(new LatLng(MapActivity.this.mMapboxMap.getLocationComponent().getLastKnownLocation().getLatitude(), MapActivity.this.mMapboxMap.getLocationComponent().getLastKnownLocation().getLongitude())).build();
+
+                                                        MapActivity.this.mMapboxMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition),10);
+
+
+
+                                                }
+                                                return true;
                                             }
                                         });
-                                        collectbutton.setVisibility(View.VISIBLE);
-                                        collectbutton.setBackgroundResource(R.drawable.collect);
-                                        collectbutton.setOnClickListener(new View.OnClickListener() {
-                                            @Override
-                                            public void onClick(View v) {
-                                                Bookmark bookmark=new Bookmark();
-                                                bookmark.setBookmarkname(placename);
-                                                bookmark.setAddress(address);
 
-                                                Bookmarklab.get(MapActivity.this).addbookmark(bookmark);
-                                                Intent intent = GetawayLibrary_Viewpager_activity.newIntent(MapActivity.this,bookmark.getMbookmarkid());
-                                                startActivity(intent);
-                                            }
-                                        });
+                                        /*bottomtextview.setText(address);
+                                        bottomtextview.setVisibility(View.VISIBLE);*/
 
                                         CameraPosition cameraPosition = new CameraPosition.Builder().target(new LatLng(lat,lng)).zoom(20).build();
                                         mMapboxMap.setCameraPosition(cameraPosition);
@@ -229,12 +245,11 @@ public class MapActivity extends AppCompatActivity implements  PermissionsListen
                                         Icon icon = iconFactory.fromResource(R.drawable.mypoi);
 
                                         //get address to put as ADDRESS
-                                        MapActivity.this.mMapboxMap.addMarker(new MarkerOptions().position(new LatLng(lat,lng)).icon(icon));
+                                        MapActivity.this.mMapboxMap.addMarker(new MarkerOptions().position(new LatLng(lat,lng)).icon(icon).title(address).setSnippet(address));
                                         MapActivity.this.mMapboxMap.setOnMarkerClickListener(new MapboxMap.OnMarkerClickListener() {
                                             @Override
                                             public boolean onMarkerClick(@NonNull Marker marker) {
-
-                                                return false;
+                                                return true;
                                             }
                                         });
                                         return true;

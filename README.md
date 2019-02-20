@@ -30,11 +30,11 @@ and I got the specific place of interest and then I was shown with option to Wis
 
 ![](https://github.com/AlisonGou/Getaway_Library/blob/wishlist/location/screenshot/placedetail.png)
 
-I am also offered with an option to add a place directly in the wishlist by clicking on ‘add bookmark’.
+4. I am also offered with an option to add a place directly in the wishlist by clicking on ‘add bookmark’.
 
-![](https://github.com/AlisonGou/Getaway_Library/blob/wishlist/location/screenshot/wishlistmenu.png)
+   ![](https://github.com/AlisonGou/Getaway_Library/blob/wishlist/location/screenshot/wishlistmenu.png)
 
-4. For instanace, I would like to visit "重庆（chongqing）" in the future, then I added it to my list:
+For instanace, I would like to visit "重庆（chongqing）" in the future, then I added it to my list:
 
 ![](https://github.com/AlisonGou/Getaway_Library/blob/wishlist/location/screenshot/addplace.png)
 

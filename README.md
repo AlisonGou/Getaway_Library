@@ -8,7 +8,7 @@ This app features Mapbox Map API, Geocoding API to create a LBS_app.
 
 Users can either search the place name on map and then add the place to a wishlist, or can add the place directly in the wishlist.
 
-## app intro
+## App Intro
 
 1. Input a general category to explore in a city as below, in this example, I searched ski spots in Beijing:
 

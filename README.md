@@ -14,7 +14,7 @@ Users can either search the place name on map and then add the place to a wishli
 
 ![](https://github.com/AlisonGou/Getaway_Library/blob/wishlist/location/screenshot/generalsearch.png)
 
-and I got the area that covers the related return places.
+and I got the area that covers the related returned places.
 
 ![](https://github.com/AlisonGou/Getaway_Library/blob/wishlist/location/screenshot/generalsearchreturn.png)
 
@@ -22,7 +22,7 @@ and I got the area that covers the related return places.
 
 ![](https://github.com/AlisonGou/Getaway_Library/blob/wishlist/location/screenshot/specificsearch.png)
 
-and I got the specific place of interest and Then I was shown with option to Wishlist(add it to wishlist), Location(zoom back to current location) and Navigation(still in development)
+and I got the specific place of interest and then I was shown with option to Wishlist(add it to wishlist), Location(zoom back to current location) and Navigation(still in development)
 
 ![](https://github.com/AlisonGou/Getaway_Library/blob/wishlist/location/screenshot/specificsearchreturn.png)
 
@@ -34,11 +34,10 @@ I am also offered with an option to add a place directly in the wishlist by clic
 
 ![](https://github.com/AlisonGou/Getaway_Library/blob/wishlist/location/screenshot/wishlistmenu.png)
 
-4. If I am interested in adding a dreamy place directly into my wishlist, then I could click on the "add bookmark", for example,
-I would like to visit "重庆（chongqing）" in the future, then I added it to my list:
+4. For instanace, I would like to visit "重庆（chongqing）" in the future, then I added it to my list:
 
 ![](https://github.com/AlisonGou/Getaway_Library/blob/wishlist/location/screenshot/addplace.png)
 
-5. This is my list looks like and the places with check box being checked means I have already visited there:
+5. This is how my wishlist looks like and the places with check box being checked means I have already visited there:
 
 ![](https://github.com/AlisonGou/Getaway_Library/blob/wishlist/location/screenshot/wishlist.png)
